@@ -1,0 +1,16 @@
+name: Dummy Deployment Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Dummy Step
+        run: echo "✅ GitHub Actions pipeline is working on main branch."
