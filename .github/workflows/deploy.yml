@@ -6,13 +6,42 @@ on:
       - feature/auth-setup
 
 jobs:
-  dummy-job:
+  deploy:
     runs-on: ubuntu-latest
 
+    env:
+      KUBECONFIG_FILE: /tmp/kubeconfig
+
     steps:
-      - name:  Checkout code
+      - name: Ì≥• Checkout code
         uses: actions/checkout@v4
 
-      - name:  Print success message
-        run: echo "Workflow triggered successfully from feature/auth-setup branch."
+      - name: Ì¥ê Set up kubeconfig from secret
+        run: |
+          echo "${{ secrets.KUBECONFIG }}" | base64 -d > $KUBECONFIG_FILE
+          chmod 600 $KUBECONFIG_FILE
 
+      - name: ‚ò∏Ô∏è Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+
+      - name: Ì≥¶ Install Helm
+        uses: azure/setup-helm@v4
+
+      - name: Ì≥ä Deploy Prometheus (dev)
+        run: |
+          helm upgrade --install prometheus ./helm/prometheus \
+            --namespace dev \
+            --create-namespace \
+            --values manifests/prometheus-values-dev.yaml \
+            --kubeconfig $KUBECONFIG_FILE
+
+      - name: ÔøΩÔøΩ Deploy Grafana (dev)
+        run: |
+          helm upgrade --install grafana ./helm/grafana \
+            --namespace dev \
+            --create-namespace \
+            --values manifests/grafana-values-dev.yaml \
+            --kubeconfig $KUBECONFIG_FILE
