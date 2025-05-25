@@ -6,7 +6,9 @@ image:
   pullPolicy: IfNotPresent
 
 service:
-  type: ClusterIP
-  port: 80
+  type: NodePort       # You can change this to ClusterIP, LoadBalancer, etc.
+  port: 80             # Exposed service port
+  targetPort: 3000     # Container port Grafana listens on
+  nodePort: 31147      # Optional; omit if letting Kubernetes auto-assign
 
 resources: {}
