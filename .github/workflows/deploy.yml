@@ -7,16 +7,16 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     env:
       KUBECONFIG_FILE: /tmp/kubeconfig
 
     steps:
-      - name: í³¥ Checkout code
+      - name: ï¿½ï¿½ï¿½ Checkout code
         uses: actions/checkout@v4
 
-      - name: í´ Set up kubeconfig from secret
+      - name: ï¿½ï¿½ï¿½ Set up kubeconfig from secret
         run: |
           echo "${{ secrets.KUBECONFIG }}" | base64 -d > $KUBECONFIG_FILE
           chmod 600 $KUBECONFIG_FILE
@@ -27,10 +27,10 @@ jobs:
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
 
-      - name: í³¦ Install Helm
+      - name: ï¿½ï¿½ï¿½ Install Helm
         uses: azure/setup-helm@v4
 
-      - name: í³Š Deploy Prometheus (dev)
+      - name: ï¿½ï¿½ï¿½ Deploy Prometheus (dev)
         run: |
           helm upgrade --install prometheus ./helm/prometheus \
             --namespace dev \
